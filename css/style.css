@@ -135,6 +135,71 @@ a {
   color: transparent;
 }
 
+/* Scroll Progress Bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--accent-violet));
+  box-shadow: 0 0 12px var(--accent-glow);
+  z-index: 999;
+  transition: width 0.08s linear;
+}
+
+/* Ambient Aurora Backdrop */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(95px);
+  opacity: 0.22;
+  animation: auroraDrift 18s ease-in-out infinite alternate;
+}
+
+[data-theme="light"] .aurora-blob {
+  opacity: 0.14;
+}
+
+.blob-1 {
+  width: 460px;
+  height: 460px;
+  top: -120px;
+  left: -100px;
+  background: var(--accent);
+}
+
+.blob-2 {
+  width: 420px;
+  height: 420px;
+  top: 38%;
+  right: -120px;
+  background: var(--accent-violet);
+  animation-delay: -6s;
+}
+
+.blob-3 {
+  width: 380px;
+  height: 380px;
+  bottom: -100px;
+  left: 28%;
+  background: var(--accent-secondary);
+  animation-delay: -12s;
+}
+
+@keyframes auroraDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, -30px) scale(1.12); }
+}
+
 /* 3D Interactive Cards */
 .card {
   position: relative;
@@ -705,13 +770,19 @@ a {
 }
 
 .card-top {
-  top: 24px;
-  right: -22px;
+  top: 20px;
+  right: -24px;
+}
+
+.card-mid {
+  top: 50%;
+  right: -30px;
+  transform: translateY(-50%) translateZ(52px);
 }
 
 .card-bottom {
-  bottom: 24px;
-  left: -22px;
+  bottom: 22px;
+  left: -24px;
 }
 
 .floating-value {
@@ -1033,6 +1104,11 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border-top: 2px solid rgba(59, 130, 246, 0.35);
+}
+
+.project-card:hover {
+  border-top-color: var(--accent-secondary);
 }
 
 .project-card.is-hidden {
@@ -1146,6 +1222,38 @@ a {
   align-items: center;
   gap: 16px;
   padding: 18px 22px;
+}
+
+.contact-item-copy {
+  justify-content: space-between;
+}
+
+.contact-item-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.copy-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.copy-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .contact-icon {
@@ -1354,8 +1462,13 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .card-top {
+  .card-top,
+  .card-mid {
     right: 0;
+  }
+
+  .card-mid {
+    display: none;
   }
 
   .card-bottom {

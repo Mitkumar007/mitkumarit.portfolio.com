@@ -114,10 +114,18 @@ document.addEventListener("DOMContentLoaded", () => {
     revealEls.forEach((el) => el.classList.add("visible"));
   }
 
-  // Active nav link highlight on scroll
+  // Active nav link highlight & scroll progress bar
+  const scrollProgress = document.getElementById("scrollProgress");
   const sections = document.querySelectorAll("main section[id]");
-  const updateActiveNav = () => {
-    const scrollPos = window.scrollY + 120;
+  const updateOnScroll = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollProgress && docHeight > 0) {
+      const pct = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+      scrollProgress.style.width = `${pct.toFixed(2)}%`;
+    }
+
+    const scrollPos = scrollTop + 120;
     sections.forEach((section) => {
       const top = section.offsetTop;
       const height = section.offsetHeight;
@@ -131,8 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   };
-  window.addEventListener("scroll", updateActiveNav, { passive: true });
-  updateActiveNav();
+  window.addEventListener("scroll", updateOnScroll, { passive: true });
+  updateOnScroll();
 
   // Toast helper
   let toastTimer;
@@ -143,6 +151,25 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove("show"), 3600);
   };
+
+  // Copy to clipboard buttons
+  document.querySelectorAll(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const value = btn.dataset.copy;
+      if (!value) return;
+      try {
+        await navigator.clipboard.writeText(value);
+        const prev = btn.textContent;
+        btn.textContent = "Copied!";
+        showToast(`Copied: ${value}`);
+        setTimeout(() => {
+          btn.textContent = prev;
+        }, 1800);
+      } catch {
+        showToast(`Copy manually: ${value}`);
+      }
+    });
+  });
 
   // Contact form handling
   contactForm?.addEventListener("submit", (e) => {
